@@ -1,14 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
 import './index.css';
+import store from './redux/store';
 
 // Routes
 import Root from './routes/Root';
 import About from './routes/About';
 import Home from './routes/Home';
 import PageNotFound from './routes/PageNotFound';
+import Login from './routes/Login';
 
 // MUI fonts
 import '@fontsource/roboto/300.css';
@@ -33,10 +36,16 @@ const router = createBrowserRouter([
             },
         ],
     },
+    {
+        path: '/login',
+        element: <Login />,
+    },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <Provider store={store}>
+            <RouterProvider router={router} />
+        </Provider>
     </React.StrictMode>
 );
