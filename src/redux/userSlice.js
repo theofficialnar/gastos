@@ -1,10 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 
 import { auth } from '../firestore';
 
 const provider = new GoogleAuthProvider();
 
+/**
+ * Firebase call to log user in
+ */
 export const logInUser = createAsyncThunk('user/logIn', async () =>
     signInWithPopup(auth, provider)
         .then((result) => {
@@ -20,6 +23,15 @@ export const logInUser = createAsyncThunk('user/logIn', async () =>
         .catch((error) => Promise.reject(error))
 );
 
+/**
+ * Firebase call to log user out
+ */
+export const logOutUser = createAsyncThunk('user/logOut', async () =>
+    signOut(auth)
+        .then(() => ({}))
+        .catch((error) => Promise.reject(error))
+);
+
 export const userSlice = createSlice({
     name: 'user',
     initialState: {
@@ -28,11 +40,17 @@ export const userSlice = createSlice({
         name: '',
     },
     extraReducers: (builder) => {
-        builder.addCase(logInUser.fulfilled, (state, action) => {
-            state.isLoggedIn = true;
-            state.email = action.payload?.email;
-            state.name = action.payload?.name;
-        });
+        builder
+            .addCase(logInUser.fulfilled, (state, action) => {
+                state.isLoggedIn = true;
+                state.email = action.payload?.email;
+                state.name = action.payload?.name;
+            })
+            .addCase(logOutUser.fulfilled, (state) => {
+                state.isLoggedIn = false;
+                state.email = '';
+                state.name = '';
+            });
     },
 });
 
