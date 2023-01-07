@@ -42,5 +42,8 @@
         "lint-staged": "^13.0.3",
         "prettier": "^2.7.1",
         "vite": "^3.2.3"
+    },
+    "lint-staged": {
+        "**/*": "prettier --write --ignore-unknown"
     }
 }
